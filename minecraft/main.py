@@ -5,6 +5,9 @@ import moderngl as mgl
 import pygame as pg
 import sys
 
+from shader_program import ShaderProgram
+from scene import Scene
+
 
 class VoxelEngine:
     def __init__(self):
@@ -36,8 +39,19 @@ class VoxelEngine:
         # a flag to check if the game is running
         self.is_running: bool = True
 
+        self.on_init()
+
+    def on_init(self):
+        # create shader program
+        self.shader_program = ShaderProgram(self)
+        # create scene
+        self.scene = Scene(self)
+
     # updating the state of objects
     def update(self):
+        self.shader_program.update()
+        self.scene.update()
+
         # update delta time
         # clock.tick() should be called once per frame. It will compute how many milliseconds have passed since the previous call.
         self.delta_time = self.clock.tick()
@@ -51,6 +65,11 @@ class VoxelEngine:
     def render(self):
         # clear the frame and depth buffers
         self.ctx.clear(color=BG_COLOR)
+
+        # new frame
+        self.scene.render()
+
+        # display new frame
         pg.display.flip()
 
     # handle events
