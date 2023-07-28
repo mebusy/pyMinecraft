@@ -17,6 +17,8 @@ vec3 hash31(float p) {
 }
 
 void main() {
+    // debug
+    // voxel_color = vec3(float(voxel_id)/93.0);
     voxel_color = hash31(voxel_id);
     gl_Position = m_proj * m_view * m_model * vec4(in_position, 1.0);
 }
