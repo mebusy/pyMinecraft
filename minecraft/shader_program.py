@@ -1,10 +1,13 @@
 from settings import *
+from settings import glm
 
 
 class ShaderProgram:
     def __init__(self, app):
         self.app = app
-        self.ctx = app.ctx
+        self.ctx = self.app.ctx
+
+        self.player = self.app.player
 
         # --------create shader programs -------- #
         self.quad = self.get_program(shader_name="quad")
@@ -27,8 +30,9 @@ class ShaderProgram:
 
     # set uniform
     def set_uniforms_on_init(self):
-        pass
+        self.quad["m_proj"].write(self.player.m_proj)
+        self.quad["m_model"].write(glm.mat4())
 
     # update uniform
     def update(self):
-        pass
+        self.quad["m_view"].write(self.player.m_view)

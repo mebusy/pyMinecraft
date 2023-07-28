@@ -8,6 +8,8 @@ import sys
 from shader_program import ShaderProgram
 from scene import Scene
 
+from player import Player
+
 
 class VoxelEngine:
     def __init__(self):
@@ -36,12 +38,18 @@ class VoxelEngine:
         self.delta_time: float = 0.0
         self.time: float = 0.0
 
+        # lock mouse control inside the window
+        pg.event.set_grab(True)
+        # pg.mouse.set_visible(False)
+
         # a flag to check if the game is running
         self.is_running: bool = True
 
         self.on_init()
 
     def on_init(self):
+        self.player = Player(self)
+
         # create shader program
         self.shader_program = ShaderProgram(self)
         # create scene
@@ -49,6 +57,8 @@ class VoxelEngine:
 
     # updating the state of objects
     def update(self):
+        self.player.update()
+
         self.shader_program.update()
         self.scene.update()
 
