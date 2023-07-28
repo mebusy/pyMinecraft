@@ -21,8 +21,23 @@ numba | JIT compiler that translates a subset of Python and NumPy code into fast
 ## branches
 
 1. basicPygameWindow
-2. createRenderAQuadMesh
+2. meshRenderAndMoveInWorld
 
+
+## concept
+
+### voxel
+
+- unit cube, 0 
+- voxel id: 0-255
+    - 0 means empty
+    - all the rest are different types of voxels.
+
+### chunks
+
+- the space representation unit is a voxel (unit cube), but we will render the whole world using the so-called `chunks`, a 32x32x32 cube-shaped space filled with voxels.
+- instead of 3d arrays, for performance purpose we will use 1D array, and we will receive array indices according to the formulat:
+    - `idx = X + SIZE * Z + AREA * Y`  (right-hand ?)
 
 
 

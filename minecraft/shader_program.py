@@ -10,7 +10,7 @@ class ShaderProgram:
         self.player = self.app.player
 
         # --------create shader programs -------- #
-        self.quad = self.get_program(shader_name="quad")
+        self.chunk = self.get_program(shader_name="chunk")
 
         # ------------------------- #
         self.set_uniforms_on_init()
@@ -30,9 +30,9 @@ class ShaderProgram:
 
     # set uniform
     def set_uniforms_on_init(self):
-        self.quad["m_proj"].write(self.player.m_proj)
-        self.quad["m_model"].write(glm.mat4())
+        self.chunk["m_proj"].write(self.player.m_proj)
+        self.chunk["m_model"].write(glm.mat4())
 
     # update uniform
     def update(self):
-        self.quad["m_view"].write(self.player.m_view)
+        self.chunk["m_view"].write(self.player.m_view)
