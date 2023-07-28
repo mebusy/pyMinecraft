@@ -19,6 +19,7 @@ const vec2 uv_coords[4] = vec2[4](
 
 // array of 12 numbers that correspond to the indices from the array of texture coordinates
 // this is where our face ID value comes in handy
+// and by the way, the face_id attribute will come in handy for lighting later on
 const int uv_indices[12] = int[12](
     1, 0, 2, 1, 2, 3,  // tex coords indices for vertices of an even face
     3, 0, 2, 3, 1, 0  // odd face
