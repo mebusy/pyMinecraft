@@ -37,7 +37,8 @@ def build_chunk_mesh(chunk_voxels, format_size):
     # - x,y,z
     # - voxel_id
     # - face_id
-    vertex_data = np.empty(CHUNK_VOL * 18 * format_size, dtype=np.uint8)
+    assert format_size == 5
+    vertex_data = np.empty(CHUNK_VOL * 18 * format_size, dtype="uint8")
     index = 0
 
     for x in range(CHUNK_SIZE):
