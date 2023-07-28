@@ -22,6 +22,8 @@ numba | JIT compiler that translates a subset of Python and NumPy code into fast
 
 1. basicPygameWindow
 2. meshRenderAndMoveInWorld
+3. renderColorChunk
+
 
 
 ## concept
