@@ -35,7 +35,7 @@ vec3 hash31(float p) {
 void main() {
     // debug
     // voxel_color = vec3(float(voxel_id)/93.0);
-    // voxel_color = hash31(voxel_id);
+    voxel_color = hash31(voxel_id);
 
     // each face has 2 triangles,  
     // `gl_VertexID % 6` always get the ordinal number of the vertex
