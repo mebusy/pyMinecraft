@@ -24,6 +24,7 @@ class VoxelEngine:
             pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE
         )
         pg.display.gl_set_attribute(pg.GL_DEPTH_SIZE, 24)
+        # pg.display.gl_set_attribute(pg.GL_MULTISAMPLESAMPLES, 1)  # antialiasing
 
         # set window resolution
         pg.display.set_mode(WIN_RES, flags=pg.DOUBLEBUF | pg.OPENGL)
