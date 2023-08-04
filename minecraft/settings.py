@@ -29,7 +29,7 @@ PITCH_MAX = glm.radians(89)
 
 # world
 # width, height, depth
-WORLD_W, WORLD_H = 2, 2
+WORLD_W, WORLD_H = 4, 3
 WORLD_D = WORLD_W  # the width, depth will be the same
 WORLD_AREA = WORLD_W * WORLD_D
 WORLD_VOL = WORLD_AREA * WORLD_H

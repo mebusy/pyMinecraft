@@ -17,6 +17,9 @@ class Chunk:
         self.mesh: ChunkMesh = None
         # self.build_mesh()
 
+        # optimization
+        self.is_empty = True
+
     def get_model_matrix(self):
         # model matrix of the chunk based on the coordinates of its position
         m_model = glm.translate(glm.mat4(), glm.vec3(self.position) * CHUNK_SIZE)
@@ -28,6 +31,10 @@ class Chunk:
     def build_voxels(self):
         # empty chunk
         voxels = np.zeros(CHUNK_VOL, dtype="uint8")
+
+        # now only fill the non-empty voxels
+        # do not care about whether those voxels are visible or not
+        # the mesh builder will take care of the visibility
 
         # chunk postion in world
         cx, cy, cz = glm.ivec3(self.position) * CHUNK_SIZE
@@ -48,11 +55,19 @@ class Chunk:
                     # voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = x + y + z
                     voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = wy + 1
 
+        # optimization
+        if np.any(voxels):
+            self.is_empty = False
+
         return voxels
 
     def build_mesh(self):
-        self.mesh = ChunkMesh(self)
+        # optimization
+        if not self.is_empty:
+            self.mesh = ChunkMesh(self)
 
     def render(self):
-        self.set_uniform()
-        self.mesh.render()
+        # optimization
+        if not self.is_empty:
+            self.set_uniform()
+            self.mesh.render()
