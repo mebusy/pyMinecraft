@@ -29,21 +29,22 @@ class Chunk:
         # empty chunk
         voxels = np.zeros(CHUNK_VOL, dtype="uint8")
 
-        # fill chunk
+        # chunk postion in world
         cx, cy, cz = glm.ivec3(self.position) * CHUNK_SIZE
 
         # idx = X + SIZE * Z + AREA * Y
         for x in range(CHUNK_SIZE):
             for z in range(CHUNK_SIZE):
-                wx = cx + x
-                wz = cz + z
-                # height of terrain
+                wx = cx + x  # voxel x in world
+                wz = cz + z  # voxel z in world
+                # height of terrain , voxels in vertical direction
                 world_height = int(glm.simplex(glm.vec2(wx, wz) * 0.01) * 32 + 32)
                 # local height of chunk
                 local_height = min(CHUNK_SIZE, world_height - cy)
 
+                # fill the voxels in vertical direction of the chunk
                 for y in range(local_height):
-                    wy = cy + y
+                    wy = cy + y  # voxel y in world
                     # voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = x + y + z
                     voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = wy + 1
 
