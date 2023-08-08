@@ -24,7 +24,7 @@ def add_data(vertex_data, index, *vertices):
     return index
 
 
-def build_chunk_mesh(chunk_voxels, format_size):
+def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
     # the main idea of this function is that we need to form a chunk mesh
     # only from the voxel `faces` that are visible to the player
 
@@ -48,6 +48,12 @@ def build_chunk_mesh(chunk_voxels, format_size):
 
                 if not voxel_id:
                     continue
+
+                # voxel world position
+                cx, cy, cz = chunk_pos
+                wx = cx * CHUNK_SIZE + x
+                wy = cy * CHUNK_SIZE + y
+                wz = cz * CHUNK_SIZE + z
 
                 # since we only render the visible edges of the voxel, now we need
                 # implement a function that will check if the edge is visible or not

@@ -19,6 +19,11 @@ class ChunkMesh(BaseMesh):
 
     def get_vertex_data(self):
         mesh = build_chunk_mesh(
-            chunk_voxels=self.chunk.voxels, format_size=self.format_size
+            chunk_voxels=self.chunk.voxels,
+            format_size=self.format_size,
+            # the voxels faces at the boundaries of the chunk are not need to draw
+            # so we need to know the neighbors of each voxel to know if we need to draw a face
+            chunk_pos=self.chunk.position,
+            world_voxels=self.chunk.world.voxels,
         )
         return mesh
