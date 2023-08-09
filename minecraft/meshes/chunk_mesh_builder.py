@@ -158,6 +158,8 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     ao = get_ao(
                         (x, y + 1, z), (wx, wy + 1, wz), world_voxels, plane="Y"
                     )
+                    # fix anisotropy, just choose a consistent direction for the faces
+                    flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
                     # format : x,y,z, voxel_id, face_id  ( clockwise ?), ao_id
                     v0 = to_uint8(x, y + 1, z, voxel_id, 0, ao[0])
@@ -165,7 +167,11 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 0, ao[2])
                     v3 = to_uint8(x, y + 1, z + 1, voxel_id, 0, ao[3])
 
-                    index = add_data(vertex_data, index, v0, v3, v2, v0, v2, v1)
+                    if flip_id:
+                        # flip the order of triangles vertices for each face
+                        index = add_data(vertex_data, index, v1, v0, v3, v1, v3, v2)
+                    else:
+                        index = add_data(vertex_data, index, v0, v3, v2, v0, v2, v1)
 
                 # bottom face
                 if is_void((x, y - 1, z), (wx, wy - 1, wz), world_voxels):
@@ -173,12 +179,17 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                         (x, y - 1, z), (wx, wy - 1, wz), world_voxels, plane="Y"
                     )
 
+                    flip_id = ao[1] + ao[3] > ao[0] + ao[2]
+
                     v0 = to_uint8(x, y, z, voxel_id, 1, ao[0])
                     v1 = to_uint8(x + 1, y, z, voxel_id, 1, ao[1])
                     v2 = to_uint8(x + 1, y, z + 1, voxel_id, 1, ao[2])
                     v3 = to_uint8(x, y, z + 1, voxel_id, 1, ao[3])
 
-                    index = add_data(vertex_data, index, v0, v2, v3, v0, v1, v2)
+                    if flip_id:
+                        index = add_data(vertex_data, index, v1, v3, v0, v1, v2, v3)
+                    else:
+                        index = add_data(vertex_data, index, v0, v2, v3, v0, v1, v2)
 
                 # right face
                 if is_void((x + 1, y, z), (wx + 1, wy, wz), world_voxels):
@@ -186,12 +197,17 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                         (x + 1, y, z), (wx + 1, wy, wz), world_voxels, plane="X"
                     )
 
+                    flip_id = ao[1] + ao[3] > ao[0] + ao[2]
+
                     v0 = to_uint8(x + 1, y, z, voxel_id, 2, ao[0])
                     v1 = to_uint8(x + 1, y + 1, z, voxel_id, 2, ao[1])
                     v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 2, ao[2])
                     v3 = to_uint8(x + 1, y, z + 1, voxel_id, 2, ao[3])
 
-                    index = add_data(vertex_data, index, v0, v1, v2, v0, v2, v3)
+                    if flip_id:
+                        index = add_data(vertex_data, index, v3, v0, v1, v3, v1, v2)
+                    else:
+                        index = add_data(vertex_data, index, v0, v1, v2, v0, v2, v3)
 
                 # left face
                 if is_void((x - 1, y, z), (wx - 1, wy, wz), world_voxels):
@@ -199,12 +215,17 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                         (x - 1, y, z), (wx - 1, wy, wz), world_voxels, plane="X"
                     )
 
+                    flip_id = ao[1] + ao[3] > ao[0] + ao[2]
+
                     v0 = to_uint8(x, y, z, voxel_id, 3, ao[0])
                     v1 = to_uint8(x, y + 1, z, voxel_id, 3, ao[1])
                     v2 = to_uint8(x, y + 1, z + 1, voxel_id, 3, ao[2])
                     v3 = to_uint8(x, y, z + 1, voxel_id, 3, ao[3])
 
-                    index = add_data(vertex_data, index, v0, v2, v1, v0, v3, v2)
+                    if flip_id:
+                        index = add_data(vertex_data, index, v3, v1, v0, v3, v2, v1)
+                    else:
+                        index = add_data(vertex_data, index, v0, v2, v1, v0, v3, v2)
 
                 # back face
                 if is_void((x, y, z - 1), (wx, wy, wz - 1), world_voxels):
@@ -212,12 +233,17 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                         (x, y, z - 1), (wx, wy, wz - 1), world_voxels, plane="Z"
                     )
 
+                    flip_id = ao[1] + ao[3] > ao[0] + ao[2]
+
                     v0 = to_uint8(x, y, z, voxel_id, 4, ao[0])
                     v1 = to_uint8(x, y + 1, z, voxel_id, 4, ao[1])
                     v2 = to_uint8(x + 1, y + 1, z, voxel_id, 4, ao[2])
                     v3 = to_uint8(x + 1, y, z, voxel_id, 4, ao[3])
 
-                    index = add_data(vertex_data, index, v0, v1, v2, v0, v2, v3)
+                    if flip_id:
+                        index = add_data(vertex_data, index, v3, v0, v1, v3, v1, v2)
+                    else:
+                        index = add_data(vertex_data, index, v0, v1, v2, v0, v2, v3)
 
                 # front face
                 if is_void((x, y, z + 1), (wx, wy, wz + 1), world_voxels):
@@ -225,12 +251,17 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                         (x, y, z + 1), (wx, wy, wz + 1), world_voxels, plane="Z"
                     )
 
+                    flip_id = ao[1] + ao[3] > ao[0] + ao[2]
+
                     v0 = to_uint8(x, y, z + 1, voxel_id, 5, ao[0])
                     v1 = to_uint8(x, y + 1, z + 1, voxel_id, 5, ao[1])
                     v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 5, ao[2])
                     v3 = to_uint8(x + 1, y, z + 1, voxel_id, 5, ao[3])
 
-                    index = add_data(vertex_data, index, v0, v2, v1, v0, v3, v2)
+                    if flip_id:
+                        index = add_data(vertex_data, index, v3, v1, v0, v3, v2, v1)
+                    else:
+                        index = add_data(vertex_data, index, v0, v2, v1, v0, v3, v2)
 
     # we should take the part of the array that contains only the vertices that we have filled
     return vertex_data[: index + 1]
