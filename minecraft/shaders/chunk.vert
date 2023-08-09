@@ -10,6 +10,13 @@ uniform mat4 m_model;
 
 out vec3 voxel_color;
 out vec2 uv;
+out float shading;
+
+const float face_shading[6] = float[6](
+    1.0, 0.5, // top bottom
+    0.5, 0.8, // right left
+    0.5, 0.8 // front back
+);
 
 // (0,0) is bottom left
 const vec2 uv_coords[4] = vec2[4](
@@ -43,6 +50,8 @@ void main() {
     // to get the necessary index position for vertex in this array of indicies
     int uv_index = gl_VertexID % 6 + (face_id & 1) * 6;
     uv = uv_coords[ uv_indices[uv_index] ];
+
+    shading = face_shading[face_id];
 
     gl_Position = m_proj * m_view * m_model * vec4(in_position, 1.0);
 }
