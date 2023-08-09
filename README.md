@@ -24,6 +24,7 @@ numba | JIT compiler that translates a subset of Python and NumPy code into fast
 2. meshRenderAndMoveInWorld
 3. renderColorChunk
 4. textureAndNoise
+5. removeChunkBoundaryMesh
 
 
 
