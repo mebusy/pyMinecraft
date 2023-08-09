@@ -1,15 +1,46 @@
 from settings import *
-from settings import np, CHUNK_VOL, CHUNK_SIZE, CHUNK_AREA
+from settings import (
+    np,
+    CHUNK_VOL,
+    CHUNK_SIZE,
+    CHUNK_AREA,
+    WORLD_W,
+    WORLD_H,
+    WORLD_D,
+    WORLD_AREA,
+)
 
 
-def is_void(voxel_pos, chunk_voxels):
-    x, y, z = voxel_pos
-    # if the voxel is outside the chunk, then it is void
-    if x < 0 or x >= CHUNK_SIZE or y < 0 or y >= CHUNK_SIZE or z < 0 or z >= CHUNK_SIZE:
-        return True
+# determine the index of its chunk by the world coordinates of the voxel
+def get_chunk_index(world_voxel_pos):
+    wx, wy, wz = world_voxel_pos
+    cx = wx // CHUNK_SIZE
+    cy = wy // CHUNK_SIZE
+    cz = wz // CHUNK_SIZE
+    if not (0 <= cx < WORLD_W and 0 <= cy < WORLD_H and 0 <= cz < WORLD_D):
+        return -1
+    index = cx + WORLD_W * cz + WORLD_AREA * cy
+    return index
+
+
+def is_void(local_voxel_pos, world_voxel_pos, world_voxels):
+    chunk_index = get_chunk_index(world_voxel_pos)
+    if chunk_index == -1:
+        # not in chunk
+        return False
+
+    chunk_voxels = world_voxels[chunk_index]
+
+    x, y, z = local_voxel_pos
+
+    # Caution: x,y,z may be negative or greater than CHUNK_SIZE
+    # that is , -1 is equivalent to CHUNK_SIZE - 1
+    voxel_index = (
+        x % CHUNK_SIZE + (z % CHUNK_SIZE) * CHUNK_SIZE + (y % CHUNK_SIZE) * CHUNK_AREA
+    )
 
     # if the voxel is inside the chunk, then we check if it is empty or not
-    voxel_id = chunk_voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y]
+    voxel_id = chunk_voxels[voxel_index]
     return voxel_id == 0
 
 
@@ -62,7 +93,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                 # and accordingly, we will check the rest of the faces by performing similar check
 
                 # top face
-                if is_void((x, y + 1, z), chunk_voxels):
+                if is_void((x, y + 1, z), (wx, wy + 1, wz), world_voxels):
                     # format : x,y,z, voxel_id, face_id  ( clockwise ?)
                     v0 = (x, y + 1, z, voxel_id, 0)
                     v1 = (x + 1, y + 1, z, voxel_id, 0)
@@ -72,7 +103,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     index = add_data(vertex_data, index, v0, v3, v2, v0, v2, v1)
 
                 # bottom face
-                if is_void((x, y - 1, z), chunk_voxels):
+                if is_void((x, y - 1, z), (wx, wy - 1, wz), world_voxels):
                     v0 = (x, y, z, voxel_id, 1)
                     v1 = (x + 1, y, z, voxel_id, 1)
                     v2 = (x + 1, y, z + 1, voxel_id, 1)
@@ -81,7 +112,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     index = add_data(vertex_data, index, v0, v2, v3, v0, v1, v2)
 
                 # right face
-                if is_void((x + 1, y, z), chunk_voxels):
+                if is_void((x + 1, y, z), (wx + 1, wy, wz), world_voxels):
                     v0 = (x + 1, y, z, voxel_id, 2)
                     v1 = (x + 1, y + 1, z, voxel_id, 2)
                     v2 = (x + 1, y + 1, z + 1, voxel_id, 2)
@@ -90,7 +121,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     index = add_data(vertex_data, index, v0, v1, v2, v0, v2, v3)
 
                 # left face
-                if is_void((x - 1, y, z), chunk_voxels):
+                if is_void((x - 1, y, z), (wx - 1, wy, wz), world_voxels):
                     v0 = (x, y, z, voxel_id, 3)
                     v1 = (x, y + 1, z, voxel_id, 3)
                     v2 = (x, y + 1, z + 1, voxel_id, 3)
@@ -99,7 +130,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     index = add_data(vertex_data, index, v0, v2, v1, v0, v3, v2)
 
                 # back face
-                if is_void((x, y, z - 1), chunk_voxels):
+                if is_void((x, y, z - 1), (wx, wy, wz - 1), world_voxels):
                     v0 = (x, y, z, voxel_id, 4)
                     v1 = (x, y + 1, z, voxel_id, 4)
                     v2 = (x + 1, y + 1, z, voxel_id, 4)
@@ -108,7 +139,7 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     index = add_data(vertex_data, index, v0, v1, v2, v0, v2, v3)
 
                 # front face
-                if is_void((x, y, z + 1), chunk_voxels):
+                if is_void((x, y, z + 1), (wx, wy, wz + 1), world_voxels):
                     v0 = (x, y, z + 1, voxel_id, 5)
                     v1 = (x, y + 1, z + 1, voxel_id, 5)
                     v2 = (x + 1, y + 1, z + 1, voxel_id, 5)
@@ -117,4 +148,4 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     index = add_data(vertex_data, index, v0, v2, v1, v0, v3, v2)
 
     # we should take the part of the array that contains only the vertices that we have filled
-    return vertex_data[:index]
+    return vertex_data[: index + 1]
