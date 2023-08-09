@@ -47,3 +47,13 @@ numba | JIT compiler that translates a subset of Python and NumPy code into fast
 
 
 
+## Misc
+
+### Ambient Occlusion
+
+- visual effect that adds depth to voxels by making the intersections between voxels darker, mimicking how light interacts with corners in the real world.
+- minecraft like: https://0fps.net/2013/07/03/ambient-occlusion-for-minecraft-like-worlds/
+    - as far as voxels are concerned, there is a fairly way to calculate ambient occlusion. 
+    - the general idea is to calculate ambient occlusion for each vertex using only information from adjacent voxels, 
+        - and for each vertex depending on these voxels there are only 4 possible variants of ambient occlusion.
+        - <img src="https://0fps.files.wordpress.com/2013/07/aovoxel2.png" height=400/>
