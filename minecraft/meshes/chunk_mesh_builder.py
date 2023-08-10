@@ -20,7 +20,7 @@ def get_ao(local_pos, world_pos, world_voxels, plane):
     wx, wy, wz = world_pos
 
     # for example, if we are rendering the top face, then we need to check the ambient occlusion of the vertices of the top face
-    # then first we need to determine the presense of 8 voxels located in the same place.
+    # then first we need to determine the presense of 8 voxels located in the same plane (note: this plane is not the same plane of the testing voxel).
 
     # for this, we will use the `plane` flag,  and the further code will be valid for the top and bottom faces since they belongs to the Y plane
     if plane == "Y":
