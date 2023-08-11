@@ -30,3 +30,6 @@ class ChunkMesh(BaseMesh):
             world_voxels=self.chunk.world.voxels,
         )
         return mesh
+
+    def rebuild(self):
+        self.vao = self.get_vao()

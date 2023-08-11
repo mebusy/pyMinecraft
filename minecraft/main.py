@@ -94,6 +94,8 @@ class VoxelEngine:
             ):
                 self.is_running = False
 
+            self.player.handle_event(event)
+
     def run(self):
         # main loop
         while self.is_running:

@@ -35,3 +35,12 @@ class Player(Camera):
             self.move_up(vel)
         if key_state[pg.K_e]:
             self.move_down(vel)
+
+    def handle_event(self, event):
+        # adding and removing voxels with clicks
+        if event.type == pg.MOUSEBUTTONDOWN:
+            voxel_handler = self.app.scene.world.voxel_handler
+            if event.button == 1:  # left click
+                voxel_handler.set_voxel()
+            if event.button == 3:  # right click
+                voxel_handler.switch_mode()

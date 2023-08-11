@@ -14,7 +14,7 @@ class Scene:
         self.world = World(self.app)
 
     def update(self):
-        pass
+        self.world.update()
 
     def render(self):
         # self.quad.render()
