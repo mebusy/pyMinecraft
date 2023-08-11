@@ -35,6 +35,7 @@ class BaseMesh:
         vertex_data = self.get_vertex_data()
         vbo = self.ctx.buffer(vertex_data)
         # vao = program + vbo (+ format + attrs)
+        # print( vbo, self.vbo_format, self.attrs )
         vao = self.ctx.vertex_array(
             self.program, [(vbo, self.vbo_format, *self.attrs)], skip_errors=True
         )
