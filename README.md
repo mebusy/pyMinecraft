@@ -63,3 +63,5 @@ numba | JIT compiler that translates a subset of Python and NumPy code into fast
 
 - when applied Ambient Occlusion, since each face consists of two triangles, the interpolation of non-linear value along the face leads to an undesirable effect.
 - to fix this, we need to choose a consistent orientation for the faces , when some condition is met, we flip the order of triangle vertices for each face, that is, choose another diagonal to split the sqaure into triangles.
+    - but it will also cause our texture changing its orientation due to flipped faces.
+    - if we want to continue using textures , then should eliminate this draw back.
