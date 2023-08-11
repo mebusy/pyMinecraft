@@ -11,7 +11,6 @@ class Camera:
         self.yaw = glm.radians(yaw)
         self.pitch = glm.radians(pitch)
 
-        # lelf-hand coordinate system, y axis point up, like Unity3D?
         self.up = glm.vec3(0, 1, 0)  # y axis
         self.right = glm.vec3(1, 0, 0)  # x axis
         # CAUTION: forward is not +z axis

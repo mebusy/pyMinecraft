@@ -10,11 +10,11 @@ class ChunkMesh(BaseMesh):
         self.ctx = self.app.ctx
         self.program = self.app.shader_program.chunk
 
-        self.vbo_format = "3u1 1u1 1u1 1u1"
+        self.vbo_format = "3u1 1u1 1u1 1u1 1u1"
         # these is a good idea to parse this format to get its size
         self.format_size = sum(int(fmt[:1]) for fmt in self.vbo_format.split())
         # attributes names passed to the shader
-        self.attrs = ("in_position", "voxel_id", "face_id", "ao_id")
+        self.attrs = ("in_position", "voxel_id", "face_id", "ao_id", "flip_id")
         self.vao = self.get_vao()
 
     def get_vertex_data(self):

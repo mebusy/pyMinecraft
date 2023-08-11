@@ -63,8 +63,16 @@ def get_ao(local_pos, world_pos, world_voxels, plane):
 
 
 @njit
-def to_uint8(x, y, z, voxel_id, face_id, ao_id):
-    return uint8(x), uint8(y), uint8(z), uint8(voxel_id), uint8(face_id), uint8(ao_id)
+def to_uint8(x, y, z, voxel_id, face_id, ao_id, flip_id):
+    return (
+        uint8(x),
+        uint8(y),
+        uint8(z),
+        uint8(voxel_id),
+        uint8(face_id),
+        uint8(ao_id),
+        uint8(flip_id),
+    )
 
 
 # determine the index of its chunk by the world coordinates of the voxel
@@ -124,11 +132,13 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
     # but each face has 2 triangles, so we need 6 vertices per voxel,
     # so the maximum possible number of visible vertices for each voxel is 18.
     #
-    # each vertex has 5 attributes: (= format_zize)
+    # each vertex has 7 attributes: (= format_zize)
     # - x,y,z
     # - voxel_id
     # - face_id
-    assert format_size == 6
+    # - ao_id
+    # - flip_id
+    assert format_size == 7
     vertex_data = np.empty(CHUNK_VOL * 18 * format_size, dtype="uint8")
     index = 0
 
@@ -161,17 +171,24 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
                     # fix anisotropy, just choose a consistent direction for the faces
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-                    # format : x,y,z, voxel_id, face_id  ( clockwise ?), ao_id
-                    v0 = to_uint8(x, y + 1, z, voxel_id, 0, ao[0])
-                    v1 = to_uint8(x + 1, y + 1, z, voxel_id, 0, ao[1])
-                    v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 0, ao[2])
-                    v3 = to_uint8(x, y + 1, z + 1, voxel_id, 0, ao[3])
+                    # format : x,y,z, voxel_id, face_id  ( clockwise ?), ao_id, flip_id
+                    v0 = to_uint8(x, y + 1, z, voxel_id, 0, ao[0], flip_id)
+                    v1 = to_uint8(x + 1, y + 1, z, voxel_id, 0, ao[1], flip_id)
+                    v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 0, ao[2], flip_id)
+                    v3 = to_uint8(x, y + 1, z + 1, voxel_id, 0, ao[3], flip_id)
+
+                    # 0 1
+                    # 3 2
 
                     if flip_id:
-                        # flip the order of triangles vertices for each face
+                        # flip the order of triangles vertices for each face, / diagonal
                         index = add_data(vertex_data, index, v1, v0, v3, v1, v3, v2)
                     else:
+                        # start from vertex index 0   \ diagonal
                         index = add_data(vertex_data, index, v0, v3, v2, v0, v2, v1)
+                        pass
+
+                # continue # DEBUG
 
                 # bottom face
                 if is_void((x, y - 1, z), (wx, wy - 1, wz), world_voxels):
@@ -181,10 +198,14 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-                    v0 = to_uint8(x, y, z, voxel_id, 1, ao[0])
-                    v1 = to_uint8(x + 1, y, z, voxel_id, 1, ao[1])
-                    v2 = to_uint8(x + 1, y, z + 1, voxel_id, 1, ao[2])
-                    v3 = to_uint8(x, y, z + 1, voxel_id, 1, ao[3])
+                    # odd face, because the visible face is from downside, so the triangle made by clockwise
+                    # 0 1
+                    # 3 2
+
+                    v0 = to_uint8(x, y, z, voxel_id, 1, ao[0], flip_id)
+                    v1 = to_uint8(x + 1, y, z, voxel_id, 1, ao[1], flip_id)
+                    v2 = to_uint8(x + 1, y, z + 1, voxel_id, 1, ao[2], flip_id)
+                    v3 = to_uint8(x, y, z + 1, voxel_id, 1, ao[3], flip_id)
 
                     if flip_id:
                         index = add_data(vertex_data, index, v1, v3, v0, v1, v2, v3)
@@ -199,10 +220,13 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-                    v0 = to_uint8(x + 1, y, z, voxel_id, 2, ao[0])
-                    v1 = to_uint8(x + 1, y + 1, z, voxel_id, 2, ao[1])
-                    v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 2, ao[2])
-                    v3 = to_uint8(x + 1, y, z + 1, voxel_id, 2, ao[3])
+                    v0 = to_uint8(x + 1, y, z, voxel_id, 2, ao[0], flip_id)
+                    v1 = to_uint8(x + 1, y + 1, z, voxel_id, 2, ao[1], flip_id)
+                    v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 2, ao[2], flip_id)
+                    v3 = to_uint8(x + 1, y, z + 1, voxel_id, 2, ao[3], flip_id)
+
+                    # 2 1
+                    # 3 0
 
                     if flip_id:
                         index = add_data(vertex_data, index, v3, v0, v1, v3, v1, v2)
@@ -217,10 +241,14 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-                    v0 = to_uint8(x, y, z, voxel_id, 3, ao[0])
-                    v1 = to_uint8(x, y + 1, z, voxel_id, 3, ao[1])
-                    v2 = to_uint8(x, y + 1, z + 1, voxel_id, 3, ao[2])
-                    v3 = to_uint8(x, y, z + 1, voxel_id, 3, ao[3])
+                    v0 = to_uint8(x, y, z, voxel_id, 3, ao[0], flip_id)
+                    v1 = to_uint8(x, y + 1, z, voxel_id, 3, ao[1], flip_id)
+                    v2 = to_uint8(x, y + 1, z + 1, voxel_id, 3, ao[2], flip_id)
+                    v3 = to_uint8(x, y, z + 1, voxel_id, 3, ao[3], flip_id)
+
+                    # right face, the triangle made by clockwise
+                    # 2 1
+                    # 3 0
 
                     if flip_id:
                         index = add_data(vertex_data, index, v3, v1, v0, v3, v2, v1)
@@ -235,10 +263,14 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-                    v0 = to_uint8(x, y, z, voxel_id, 4, ao[0])
-                    v1 = to_uint8(x, y + 1, z, voxel_id, 4, ao[1])
-                    v2 = to_uint8(x + 1, y + 1, z, voxel_id, 4, ao[2])
-                    v3 = to_uint8(x + 1, y, z, voxel_id, 4, ao[3])
+                    v0 = to_uint8(x, y, z, voxel_id, 4, ao[0], flip_id)
+                    v1 = to_uint8(x, y + 1, z, voxel_id, 4, ao[1], flip_id)
+                    v2 = to_uint8(x + 1, y + 1, z, voxel_id, 4, ao[2], flip_id)
+                    v3 = to_uint8(x + 1, y, z, voxel_id, 4, ao[3], flip_id)
+
+                    # 1 2
+                    # 0 3
+                    # made by clockwise
 
                     if flip_id:
                         index = add_data(vertex_data, index, v3, v0, v1, v3, v1, v2)
@@ -253,10 +285,13 @@ def build_chunk_mesh(chunk_voxels, format_size, chunk_pos, world_voxels):
 
                     flip_id = ao[1] + ao[3] > ao[0] + ao[2]
 
-                    v0 = to_uint8(x, y, z + 1, voxel_id, 5, ao[0])
-                    v1 = to_uint8(x, y + 1, z + 1, voxel_id, 5, ao[1])
-                    v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 5, ao[2])
-                    v3 = to_uint8(x + 1, y, z + 1, voxel_id, 5, ao[3])
+                    v0 = to_uint8(x, y, z + 1, voxel_id, 5, ao[0], flip_id)
+                    v1 = to_uint8(x, y + 1, z + 1, voxel_id, 5, ao[1], flip_id)
+                    v2 = to_uint8(x + 1, y + 1, z + 1, voxel_id, 5, ao[2], flip_id)
+                    v3 = to_uint8(x + 1, y, z + 1, voxel_id, 5, ao[3], flip_id)
+
+                    # 1 2
+                    # 0 3
 
                     if flip_id:
                         index = add_data(vertex_data, index, v3, v1, v0, v3, v2, v1)
