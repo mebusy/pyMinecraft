@@ -39,6 +39,8 @@ class VoxelHandler:
         if self.voxel_id:
             self.chunk.voxels[self.voxel_index] = 0
 
+            # this is why we make the world with chunks.
+            # use chunks we can only rebuild only the affected chunks, not the whole world.
             self.chunk.mesh.rebuild()
 
     def set_voxel(self):
