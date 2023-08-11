@@ -49,13 +49,15 @@ const vec2 uv_coords[4] = vec2[4](
 // for example, top face (even)vertex index are:
 // # v0 v1 (even)
 // # v3 v2
-// 2 triangles composed by  (v0, v3, v2), (v0, v2, v1) 
-// so the uv indices should be  (1,0,2), (1,2,3)
-// the bottom face (odd) vertex index are: 
-// # v3 v2 (odd)
-// # v0 v1
-// triangles: (v0, v2, v3), (v0, v1, v2) 
-// 
+//   2 triangles composed by  (v0, v3, v2), (v0, v2, v1) 
+//   so the uv indices should be  (1,0,2), (1,2,3)
+// the bottom face (odd) triangles: (v0, v2, v3), (v0, v1, v2), but to keep orientation consistant 
+//   with the even face, we also want to flip the texture horizontally, to 
+//   3 1  (flipped uv_coord index)
+//   2 0
+//   so the uv indices should be  (3,0,2), (3,1,0)
+//
+// FLIPPED 
 // flipped top face (even): (v1, v0, v3), (v1, v3, v2)
 //   uv indices should be 
 const int uv_indices[24] = int[24](
