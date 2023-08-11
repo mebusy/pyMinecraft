@@ -8,7 +8,8 @@ class Textures:
         self.ctx = app.ctx
 
         # load textures
-        self.texture_0 = self.load("test.png")
+        self.texture_0 = self.load("frame0.png")
+        # self.texture_0 = self.load("test.png")
 
         # having loaded the texture we need determine the number of the texture unit to work with it
         # assign texture unit
