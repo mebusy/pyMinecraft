@@ -31,6 +31,10 @@ numba | JIT compiler that translates a subset of Python and NumPy code into fast
 9. frustumCulling
 
 
+## TODO 
+
+- occlusion culling
+- use of appropriate data structures for efficient organization and rendering of chunks
 
 
 ## concept
