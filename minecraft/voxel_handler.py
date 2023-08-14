@@ -30,9 +30,24 @@ class VoxelHandler:
         # that is we need switch between adding and removing voxel
         self.interaction_mode = 0  # 0: remove voxel   1: add voxel
 
+        # to add a voxel, we will define an attribute with a non-zero value
+        self.new_voxel_id = 1
 
     def add_voxel(self):
-        pass
+        if self.voxel_id:
+            # check voxel id along the normal
+            result = self.get_voxel_id(self.voxel_world_pos + self.voxel_normal)
+
+            # is the new place empty ?
+            if not result[0]:
+                _, voxel_index, _, chunk = result
+
+                # here you should pay attention to whether the chunk was empty
+                if chunk.is_empty:
+                    chunk.is_empty = False
+
+                chunk.voxels[voxel_index] = self.new_voxel_id
+                chunk.mesh.rebuild()
 
     def remove_voxel(self):
         # print(f"remove_voxel {self.voxel_id} !!")
@@ -51,7 +66,7 @@ class VoxelHandler:
 
     def switch_mode(self):
         self.interaction_mode = not self.interaction_mode
-
+        # print(f'cur mode: {self.interaction_mode}')
 
     def update(self):
         self.ray_cast()
