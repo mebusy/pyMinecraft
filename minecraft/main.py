@@ -42,7 +42,7 @@ class VoxelEngine:
         self.time: float = 0.0
 
         # lock mouse control inside the window
-        pg.event.set_grab(True)
+        # pg.event.set_grab(True)
         # pg.mouse.set_visible(False)
 
         # a flag to check if the game is running

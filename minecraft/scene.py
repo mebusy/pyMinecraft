@@ -4,6 +4,8 @@ from settings import *
 # from world_objects.chunk import Chunk
 from world import World
 
+from world_objects.voxel_marker import VoxelMarker
+
 
 # for convenience, we will do all the rendering in the scene class
 class Scene:
@@ -12,11 +14,14 @@ class Scene:
         # self.quad = QuadMesh(self.app)
         # self.chunk = Chunk(self.app)
         self.world = World(self.app)
+        self.voxel_marker = VoxelMarker(self.world.voxel_handler)
 
     def update(self):
         self.world.update()
+        self.voxel_marker.update()
 
     def render(self):
         # self.quad.render()
         # self.chunk.render()
         self.world.render()
+        self.voxel_marker.render()
