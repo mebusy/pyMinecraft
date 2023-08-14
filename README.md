@@ -88,3 +88,14 @@ numba | JIT compiler that translates a subset of Python and NumPy code into fast
 - is about reducing chunk draw calls, meaning we'll only render those chunks that are inside the player's View Frustum. 
 - the most efficient way is for our chunk to create a bounding volume in the form of sphere.
 
+
+### Texture Array
+
+- a texture array is a kind of large texture that contains other textures of the same size.
+    - each such texture is accessed by its layer number, and in our case, we will use the voxel id as an access.
+- and the simplest thing you can think of is that each such texture will consist 3 parts (tiles)
+    - the first part will apply to bottom face texturing,  the middle part will apply to the sides of voxel, and the last part will apply to top face.
+- NOTE: the first row tiles are transparent ones
+- <img src="minecraft/assets/tex_array_0.png" height=600 />
+
+

@@ -61,7 +61,7 @@ class Chunk:
                 for y in range(local_height):
                     wy = cy + y  # voxel y in world
                     # voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = x + y + z
-                    voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = wy + 1
+                    voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = 2  # wy + 1
 
         # optimization
         if np.any(voxels):

@@ -8,8 +8,6 @@
 layout (location = 0) in uint packed_data;  // after packing data
 
 int x,y,z;
-int voxel_id;
-int face_id;
 int ao_id;
 int flip_id;
 
@@ -21,6 +19,10 @@ uniform mat4 m_model;
 out vec3 voxel_color;
 out vec2 uv;
 out float shading;
+
+// since they are integer, we need flat qualifier
+flat out int voxel_id;
+flat out int face_id;
 
 const float ao_values[4] = float[4](
     0.1, 0.25, 0.5, 1.0
