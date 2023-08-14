@@ -11,10 +11,14 @@ BG_COLOR = glm.vec3(0.1, 0.16, 0.25)
 
 
 # chunk
-CHUNK_SIZE = 32
+CHUNK_SIZE = (
+    48  # increase it to reduce draw calls while maintaining the same world size
+)
 H_CHUNK_SIZE = CHUNK_SIZE // 2
 CHUNK_AREA = CHUNK_SIZE * CHUNK_SIZE
 CHUNK_VOL = CHUNK_AREA * CHUNK_SIZE
+
+CHUNK_SPHERE_RADIUS = math.sqrt(3) * H_CHUNK_SIZE
 
 
 # camera
@@ -29,7 +33,7 @@ PITCH_MAX = glm.radians(89)
 
 # world
 # width, height, depth
-WORLD_W, WORLD_H = 4, 3
+WORLD_W, WORLD_H = 4, 2
 WORLD_D = WORLD_W  # the width, depth will be the same
 WORLD_AREA = WORLD_W * WORLD_D
 WORLD_VOL = WORLD_AREA * WORLD_H

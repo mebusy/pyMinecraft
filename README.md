@@ -27,6 +27,9 @@ numba | JIT compiler that translates a subset of Python and NumPy code into fast
 5. removeChunkBoundaryMesh
 6. shading
 7. packData
+8. voxelMarker
+9. frustumCulling
+
 
 
 
@@ -74,3 +77,10 @@ numba | JIT compiler that translates a subset of Python and NumPy code into fast
 - and with such action we have to rebuild the entire chunk mesh. 
 - [A Fast Voxel Traversal Algorithm for Ray Tracing](http://www.cse.yorku.ca/~amana/research/grid.pdf)
     - a special case of the DDA algorithm, but only in relation to voxels.
+
+
+### Frustum Culling
+
+- is about reducing chunk draw calls, meaning we'll only render those chunks that are inside the player's View Frustum. 
+- the most efficient way is for our chunk to create a bounding volume in the form of sphere.
+

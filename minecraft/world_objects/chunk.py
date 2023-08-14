@@ -22,6 +22,10 @@ class Chunk:
         # optimization
         self.is_empty = True
 
+        self.center = (glm.vec3(self.position) + 0.5) * CHUNK_SIZE
+        # for convinience
+        self.is_on_frustum = self.app.player.frustum.is_on_frustum
+
     def get_model_matrix(self):
         # model matrix of the chunk based on the coordinates of its position
         m_model = glm.translate(glm.mat4(), glm.vec3(self.position) * CHUNK_SIZE)
@@ -72,6 +76,6 @@ class Chunk:
 
     def render(self):
         # optimization
-        if not self.is_empty:
+        if not self.is_empty and self.is_on_frustum(self):
             self.set_uniform()
             self.mesh.render()
