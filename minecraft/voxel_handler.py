@@ -49,6 +49,34 @@ class VoxelHandler:
                 chunk.voxels[voxel_index] = self.new_voxel_id
                 chunk.mesh.rebuild()
 
+    # so far, we don't handle the case when the voxel is on the boundary of the chunk
+    # we need a method to rebuild an adjacent chunk defined by the adjacent voxel in relation to our voxel being removed
+    def rebuild_adjacent_chunk(self, adj_voxel_pos):
+        index = get_chunk_index(adj_voxel_pos)  # get the index of the adjacent chunk
+        if index != -1:
+            self.chunks[index].mesh.rebuild()
+
+    # we have 6 adjacent voxels, we need to check them all
+    def rebuild_adjacent_chunks(self):
+        lx, ly, lz = self.voxel_local_pos
+        wx, wy, wz = self.voxel_world_pos
+
+        # we will determine whether the voxel is on the border of the current chunk
+        if lx == 0:
+            self.rebuild_adjacent_chunk((wx - 1, wy, wz))
+        elif lx == CHUNK_SIZE - 1:
+            self.rebuild_adjacent_chunk((wx + 1, wy, wz))
+
+        if ly == 0:
+            self.rebuild_adjacent_chunk((wx, wy - 1, wz))
+        elif ly == CHUNK_SIZE - 1:
+            self.rebuild_adjacent_chunk((wx, wy + 1, wz))
+
+        if lz == 0:
+            self.rebuild_adjacent_chunk((wx, wy, wz - 1))
+        elif lz == CHUNK_SIZE - 1:
+            self.rebuild_adjacent_chunk((wx, wy, wz + 1))
+
     def remove_voxel(self):
         # print(f"remove_voxel {self.voxel_id} !!")
         if self.voxel_id:
@@ -57,6 +85,8 @@ class VoxelHandler:
             # this is why we make the world with chunks.
             # use chunks we can only rebuild only the affected chunks, not the whole world.
             self.chunk.mesh.rebuild()
+            # also we need to rebuild the adjacent chunks
+            self.rebuild_adjacent_chunks()
 
     def set_voxel(self):
         if self.interaction_mode:

@@ -2,6 +2,8 @@ from settings import *
 from settings import np, CHUNK_VOL, CHUNK_SIZE, CHUNK_AREA, glm
 from meshes.chunk_mesh import ChunkMesh
 
+# import random
+
 
 class Chunk:
     def __init__(self, world, position):
@@ -38,6 +40,8 @@ class Chunk:
 
         # chunk postion in world
         cx, cy, cz = glm.ivec3(self.position) * CHUNK_SIZE
+        # debug
+        # rng = random.randrange(1, 100)
 
         # idx = X + SIZE * Z + AREA * Y
         for x in range(CHUNK_SIZE):
