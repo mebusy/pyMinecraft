@@ -7,8 +7,7 @@ import math
 WIN_RES = glm.vec2(1600, 900)  # vec2(1600, 900)
 
 # colors
-BG_COLOR = glm.vec3(0.1, 0.16, 0.25)
-
+BG_COLOR = glm.vec3(0.58, 0.83, 0.99)
 
 # chunk
 CHUNK_SIZE = (
@@ -46,8 +45,8 @@ CENTER_Y = WORLD_H * H_CHUNK_SIZE
 # player
 PLAYER_SPEED = 0.005
 PLAYER_ROT_SPEED = 0.003
-# PLAYER_POS = glm.vec3(CENTER_XZ, WORLD_H * CHUNK_SIZE, CENTER_XZ)
-PLAYER_POS = glm.vec3(CENTER_XZ, CENTER_Y, CENTER_XZ)
+# PLAYER_POS = glm.vec3(CENTER_XZ, CENTER_Y, CENTER_XZ)
+PLAYER_POS = glm.vec3(CENTER_XZ, CHUNK_SIZE, CENTER_XZ)
 MOUSE_SENSITIVITY = 0.002
 
 # ray casting
@@ -55,3 +54,20 @@ MAX_RAY_DIST = 6
 
 # world generation
 SEED = 16
+
+# textures
+SAND = 1
+GRASS = 2
+DIRT = 3
+STONE = 4
+SNOW = 5
+LEAVES = 6
+WOOD = 7
+
+# terrain levels: determine the height levels to which this or that texture
+# will be, and also make our sky blue (change BG_COLOR)
+SNOW_LVL = 54
+STONE_LVL = 49
+DIRT_LVL = 40
+GRASS_LVL = 8
+SAND_LVL = 7

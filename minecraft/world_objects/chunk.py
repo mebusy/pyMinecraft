@@ -4,7 +4,7 @@ from meshes.chunk_mesh import ChunkMesh
 
 # import random
 
-from terrain_gen import get_height
+from terrain_gen import get_height, set_voxel_id
 
 
 class Chunk:
@@ -85,4 +85,5 @@ class Chunk:
                 for y in range(local_height):
                     wy = cy + y  # voxel y in world
                     # voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = x + y + z
-                    voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = 2  # wy + 1
+                    # voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = 1  # wy + 1
+                    set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height)
