@@ -8,8 +8,12 @@ https://www.youtube.com/watch?v=Ab8TOSFfNp4
 - numpy 1.24+
 - installation
     ```bash
-    pip install pygame moderngl PyGLM numba
+    pip install pygame moderngl PyGLM numba 
     ```
+    - install opensimplex to allow numba compile world generation code
+        ```bash
+        pip install opensimplex
+        ```
 
 library | desc
 --- | ---
@@ -97,5 +101,17 @@ numba | JIT compiler that translates a subset of Python and NumPy code into fast
     - the first part will apply to bottom face texturing,  the middle part will apply to the sides of voxel, and the last part will apply to top face.
 - NOTE: the first row tiles are transparent ones
 - <img src="minecraft/assets/tex_array_0.png" height=600 />
+
+
+### Terrain Generation
+
+- as with mesh creation, our world generation methods will also be compilable (numba ?)
+- and therefore using noise function from the glm module is not suitable for us
+    ```python
+    # not suitable for us
+    world_height = int(glm.simplex(glm.vec2(wx, wz) * 0.01) * 32 + 32)
+    ```
+    - since the numba compiler can only work with pure python or numpy.
+- and in this case, we will use the OpenSimplex Noise module which is just written using python, and has the noise functions we need.
 
 

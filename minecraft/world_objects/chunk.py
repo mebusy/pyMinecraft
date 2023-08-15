@@ -4,6 +4,8 @@ from meshes.chunk_mesh import ChunkMesh
 
 # import random
 
+from terrain_gen import get_height
+
 
 class Chunk:
     def __init__(self, world, position):
@@ -46,22 +48,7 @@ class Chunk:
         cx, cy, cz = glm.ivec3(self.position) * CHUNK_SIZE
         # debug
         # rng = random.randrange(1, 100)
-
-        # idx = X + SIZE * Z + AREA * Y
-        for x in range(CHUNK_SIZE):
-            for z in range(CHUNK_SIZE):
-                wx = cx + x  # voxel x in world
-                wz = cz + z  # voxel z in world
-                # height of terrain , voxels in vertical direction
-                world_height = int(glm.simplex(glm.vec2(wx, wz) * 0.01) * 32 + 32)
-                # local height of chunk
-                local_height = min(CHUNK_SIZE, world_height - cy)
-
-                # fill the voxels in vertical direction of the chunk
-                for y in range(local_height):
-                    wy = cy + y  # voxel y in world
-                    # voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = x + y + z
-                    voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = 2  # wy + 1
+        self.generate_terrain(voxels, cx, cy, cz)
 
         # optimization
         if np.any(voxels):
@@ -79,3 +66,23 @@ class Chunk:
         if not self.is_empty and self.is_on_frustum(self):
             self.set_uniform()
             self.mesh.render()
+
+    @staticmethod
+    @njit
+    def generate_terrain(voxels, cx, cy, cz):
+        # idx = X + SIZE * Z + AREA * Y
+        for x in range(CHUNK_SIZE):
+            for z in range(CHUNK_SIZE):
+                wx = cx + x  # voxel x in world
+                wz = cz + z  # voxel z in world
+                # height of terrain , voxels in vertical direction
+                # world_height = int(glm.simplex(glm.vec2(wx, wz) * 0.01) * 32 + 32)
+                world_height = get_height(wx, wz)
+                # local height of chunk
+                local_height = min(CHUNK_SIZE, world_height - cy)
+
+                # fill the voxels in vertical direction of the chunk
+                for y in range(local_height):
+                    wy = cy + y  # voxel y in world
+                    # voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = x + y + z
+                    voxels[x + CHUNK_SIZE * z + CHUNK_AREA * y] = 2  # wy + 1

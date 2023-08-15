@@ -33,7 +33,7 @@ PITCH_MAX = glm.radians(89)
 
 # world
 # width, height, depth
-WORLD_W, WORLD_H = 4, 2
+WORLD_W, WORLD_H = 20, 2
 WORLD_D = WORLD_W  # the width, depth will be the same
 WORLD_AREA = WORLD_W * WORLD_D
 WORLD_VOL = WORLD_AREA * WORLD_H
@@ -47,8 +47,11 @@ CENTER_Y = WORLD_H * H_CHUNK_SIZE
 PLAYER_SPEED = 0.005
 PLAYER_ROT_SPEED = 0.003
 # PLAYER_POS = glm.vec3(CENTER_XZ, WORLD_H * CHUNK_SIZE, CENTER_XZ)
-PLAYER_POS = glm.vec3(CENTER_XZ, WORLD_H * H_CHUNK_SIZE, CENTER_XZ)
+PLAYER_POS = glm.vec3(CENTER_XZ, CENTER_Y, CENTER_XZ)
 MOUSE_SENSITIVITY = 0.002
 
 # ray casting
 MAX_RAY_DIST = 6
+
+# world generation
+SEED = 16
