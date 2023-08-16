@@ -15,6 +15,7 @@ class ShaderProgram:
         self.voxel_marker = self.get_program(shader_name="voxel_marker")
 
         self.water = self.get_program("water")
+        self.clouds = self.get_program("clouds")
 
         # ------------------------- #
         self.set_uniforms_on_init()
@@ -53,8 +54,15 @@ class ShaderProgram:
         self.water["water_area"] = WATER_AREA
         self.water["water_line"] = WATER_LINE
 
+        # clouds
+        self.clouds["m_proj"].write(self.player.m_proj)
+        self.clouds["center"] = CENTER_XZ
+        self.clouds["bg_color"].write(BG_COLOR)
+        self.clouds["cloud_scale"] = CLOUD_SCALE
+
     # update uniform
     def update(self):
         self.chunk["m_view"].write(self.player.m_view)
         self.voxel_marker["m_view"].write(self.player.m_view)
         self.water["m_view"].write(self.player.m_view)
+        self.clouds["m_view"].write(self.player.m_view)
