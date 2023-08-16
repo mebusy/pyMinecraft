@@ -115,3 +115,39 @@ numba | JIT compiler that translates a subset of Python and NumPy code into fast
 - and in this case, we will use the OpenSimplex Noise module which is just written using python, and has the noise functions we need.
 
 
+### Fog
+
+- the fog effect is easy to implement in the fragment shader by calculating the approximate depth, using the `gl_FragCoord` variable.
+    - and using this distance exponentially in the mix function for our sky color
+    ```gsgl
+    // .frag
+    //fog
+    float fog_dist = gl_FragCoord.z / gl_FragCoord.w;
+    tex_col = mix(tex_col, bg_color, (1.0 - exp2(-0.00001 * fog_dist * fog_dist)));    
+    ```
+
+### Water
+
+- in a very simple way in our world, we can create a water surface.
+    - for this we use one quad but enlarge to the size of our world,
+    - that is , all water has 2 polygons with a tiled water texture in a translucent color.
+- in addition to water, we can implement an underwater effect
+    - for this we need to know the world position of the fragment,  which we will calculate in the vertex shader
+        ```gsgl
+        // .vert
+        frag_world_pos = (m_model * vec4(in_position, 1.0)).xyz; 
+        ```
+    - and in fragment shader, we will compare its y component with the value of the water line, and chage the color with watercolor
+        ```gsgl
+        // .frag
+        // underwater effect
+        if (frag_world_pos.y < water_line) tex_col *= vec3(0.0, 0.3, 1.0);
+        ```
+
+### Cloud
+
+- not everything is so simple here
+- to create them we form an array of 0s and 1s using 2D simplex noise for some Criterion and then create a polygonal mesh based on it
+    - but with a naive approach , we will get inefficient clouds with a huge number of polygons, which can cause a drop in the performance of our engine, 
+    - and so we have to come up with an algorithm to optimize this mesh it will turn out to be a kind of greedy mesh algorithm where we minimize the number of polygons in this mesh by merging them.
+

@@ -20,6 +20,8 @@ out vec3 voxel_color;
 out vec2 uv;
 out float shading;
 
+out vec3 frag_world_pos;
+
 // since they are integer, we need flat qualifier
 flat out int voxel_id;
 flat out int face_id;
@@ -115,6 +117,8 @@ void main() {
     uv = uv_coords[ uv_indices[uv_index] ];
 
     shading = face_shading[face_id] * ao_values[ao_id];
+
+    frag_world_pos = (m_model * vec4(in_position, 1.0)).xyz;
 
     gl_Position = m_proj * m_view * m_model * vec4(in_position, 1.0);
 }

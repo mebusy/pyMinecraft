@@ -1,5 +1,5 @@
 from settings import *
-from settings import glm
+from settings import glm, BG_COLOR, WATER_LINE
 
 
 class ShaderProgram:
@@ -37,6 +37,8 @@ class ShaderProgram:
         # when assigning a texture uniform in the shader program, we need to specify the texture unit
         # self.chunk["u_texture_0"] = 0
         self.chunk["u_texture_array_0"] = 1
+        self.chunk["bg_color"].write(BG_COLOR)  # cloud
+        self.chunk["water_line"] = WATER_LINE  # water
 
         # marker, use same uniform as chunk
         self.voxel_marker["m_proj"].write(self.player.m_proj)
