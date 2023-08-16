@@ -1,7 +1,21 @@
 from noise import noise2, noise3
 from random import random
 from settings import *
-from settings import njit, CENTER_Y, STONE, SNOW, SNOW_LVL
+from settings import (
+    njit,
+    CENTER_XZ,
+    CENTER_Y,
+    CHUNK_SIZE,
+    CHUNK_AREA,
+    STONE,
+    SNOW,
+    SNOW_LVL,
+    GRASS,
+    TREE_HEIGHT,
+    TREE_H_WIDTH,
+    TREE_H_HEIGHT,
+)
+import math
 
 # 2d nose can be used to generate height map
 # 3d noise can be used to generate cave system
@@ -61,7 +75,15 @@ def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height):
 
     # let everything that is under the first voxel in height(vertically) always be a stone
     if wy < world_height - 1:
-        voxel_id = STONE
+        # create caves
+        if (
+            noise3(wx * 0.09, wy * 0.09, wz * 0.09) > 0
+            # but here we should also specify the height limits within which our caves be located inside the world
+            and noise2(wx * 0.1, wz * 0.1) * 3 + 3 < wy < world_height - 10
+        ):
+            voxel_id = 0
+        else:
+            voxel_id = STONE
     else:
         # and for a natural image let's add some randomness to the current height,
         # and using the given height levels for the textures.
@@ -81,3 +103,47 @@ def set_voxel_id(voxels, x, y, z, wx, wy, wz, world_height):
 
     # setting ID
     voxels[get_index(x, y, z)] = voxel_id
+
+    # place tree
+    if wy < DIRT_LVL:
+        place_tree(voxels, x, y, z, voxel_id)
+
+
+@njit
+def place_tree(voxels, x, y, z, voxel_id):
+    rnd = random()
+
+    # we will place trees only on grass with a given probability
+    if voxel_id != GRASS or rnd > TREE_PROBABILITY:
+        return None
+    # we also need to check that our tree does not go beyond the chunk
+    if y + TREE_HEIGHT >= CHUNK_SIZE:
+        return None
+    if x - TREE_H_WIDTH < 0 or x + TREE_H_WIDTH >= CHUNK_SIZE:
+        return None
+    # z axis
+    if z - TREE_H_WIDTH < 0 or z + TREE_H_WIDTH >= CHUNK_SIZE:
+        return None
+
+    # under the tree, instead of grass there will be a voxel with a dirt texture
+    voxels[get_index(x, y, z)] = DIRT
+
+    # next, we will place LEAVEs,
+    # and you can do it any way you like with different randomness elements
+    # so that all the trees seems different from each other
+    m = 0
+    for n, iy in enumerate(range(TREE_H_HEIGHT, TREE_HEIGHT - 1)):
+        k = iy % 2
+        rng = int(random() * 2)
+        for ix in range(-TREE_H_WIDTH + m, TREE_H_WIDTH - m * rng):
+            for iz in range(-TREE_H_WIDTH + m * rng, TREE_H_WIDTH - m):
+                if (ix + iz) % 4:
+                    voxels[get_index(x + ix + k, y + iy, z + iz + k)] = LEAVES
+        m += 1 if n > 0 else 3 if n > 1 else 0
+
+    # tree TRUNK
+    for iy in range(1, TREE_HEIGHT - 2):
+        voxels[get_index(x, y + iy, z)] = WOOD
+
+    # top, and you can add something to its top
+    voxels[get_index(x, y + TREE_HEIGHT - 2, z)] = LEAVES
