@@ -16,7 +16,7 @@ uniform vec3 bg_color;
 // water
 uniform float water_line;
 
-in vec3 voxel_color;
+// in vec3 voxel_color;
 in vec2 uv;
 in float shading;
 in vec3 frag_world_pos;

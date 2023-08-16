@@ -16,7 +16,7 @@ uniform mat4 m_proj;
 uniform mat4 m_view;
 uniform mat4 m_model;
 
-out vec3 voxel_color;
+// out vec3 voxel_color;
 out vec2 uv;
 out float shading;
 
@@ -107,7 +107,7 @@ void main() {
     vec3 in_position = vec3(x, y, z);
 
     // voxel_color = vec3(float(voxel_id)/93.0); // debug
-    voxel_color = hash31(voxel_id);
+    // voxel_color = hash31(voxel_id);
 
     // each face has 2 triangles,  
     // `gl_VertexID % 6` always get the ordinal number of the vertex
@@ -118,8 +118,8 @@ void main() {
 
     shading = face_shading[face_id] * ao_values[ao_id];
 
+    // gl_Position = m_proj * m_view * m_model * vec4(in_position, 1.0);
     frag_world_pos = (m_model * vec4(in_position, 1.0)).xyz;
-
-    gl_Position = m_proj * m_view * m_model * vec4(in_position, 1.0);
+    gl_Position = m_proj * m_view * vec4(frag_world_pos, 1.0);
 }
 

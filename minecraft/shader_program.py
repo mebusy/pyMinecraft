@@ -14,6 +14,8 @@ class ShaderProgram:
 
         self.voxel_marker = self.get_program(shader_name="voxel_marker")
 
+        self.water = self.get_program("water")
+
         # ------------------------- #
         self.set_uniforms_on_init()
 
@@ -45,7 +47,14 @@ class ShaderProgram:
         self.voxel_marker["m_model"].write(glm.mat4())
         self.voxel_marker["u_texture_0"] = 0
 
+        # water
+        self.water["m_proj"].write(self.player.m_proj)
+        self.water["u_texture_0"] = 2
+        self.water["water_area"] = WATER_AREA
+        self.water["water_line"] = WATER_LINE
+
     # update uniform
     def update(self):
         self.chunk["m_view"].write(self.player.m_view)
         self.voxel_marker["m_view"].write(self.player.m_view)
+        self.water["m_view"].write(self.player.m_view)

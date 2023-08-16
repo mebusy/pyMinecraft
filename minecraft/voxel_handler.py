@@ -31,7 +31,7 @@ class VoxelHandler:
         self.interaction_mode = 0  # 0: remove voxel   1: add voxel
 
         # to add a voxel, we will define an attribute with a non-zero value
-        self.new_voxel_id = 1
+        self.new_voxel_id = DIRT
 
     def add_voxel(self):
         if self.voxel_id:
