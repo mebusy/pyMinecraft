@@ -56,7 +56,8 @@ def get_height(x, z):
             a_array[i] if i & 1 == 0 else -a_array[i]
         )
 
-    height = max(height, 1)
+    # height = max(height, 1)
+    height = max(height, noise2(x * f8, z * f8) + 2)
     height *= island
 
     # return int(island)
