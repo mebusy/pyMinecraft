@@ -1,10 +1,10 @@
-import { Camera } from "./camera.js";
+import { Camera } from './camera.js'
 
 class Player extends Camera {
-  constructor(fov = 50, aspect = 1, near = 0.1, far = 2000) {
-    super(fov, aspect, near, far);
+  constructor(fov, aspect, near, far) {
+    super(fov, aspect, near, far)
 
-    this.position.z = 5;
+    this.position.z = 5
   }
 
   update() {
@@ -12,4 +12,4 @@ class Player extends Camera {
   }
 }
 
-export { Player };
+export { Player }
