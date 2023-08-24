@@ -24,7 +24,6 @@ const player = new Player(
   0.1,
   1000
 );
-// player.position.z = 5;
 
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
@@ -32,8 +31,6 @@ const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
 const clock = new THREE.Clock();
-
-scene.background = new THREE.Color(...SETTINGS.BG_COLOR);
 
 // ! update
 function update() {
