@@ -24,12 +24,6 @@ const player = new Player(
   0.1,
   1000
 );
-
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
-
 const clock = new THREE.Clock();
 
 // ! update
@@ -38,8 +32,10 @@ function update() {
   const delta = clock.getDelta();
 
   // console.log(delta);
-  cube.rotation.x += delta;
-  cube.rotation.y += delta;
+  // cube.rotation.x += delta;
+  // cube.rotation.y += delta;
+
+  // uniformData.u_time.value = clock.getElapsedTime();
 }
 
 function mainLoop() {
