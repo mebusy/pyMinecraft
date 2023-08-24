@@ -10,7 +10,7 @@ const camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
   0.1,
-  1000,
+  1000
 );
 
 const renderer = new THREE.WebGLRenderer();
@@ -31,17 +31,19 @@ const clock = new THREE.Clock();
 
 scene.background = new THREE.Color(...SETTINGS.BG_COLOR);
 
+// main loop
 function animate() {
   requestAnimationFrame(animate);
 
+  // ! update
   // const elapsed = clock.getElapsedTime();
   const delta = clock.getDelta();
 
   // console.log(delta);
-
   cube.rotation.x += delta;
   cube.rotation.y += delta;
 
+  // ! render
   renderer.render(scene, camera);
 }
 
