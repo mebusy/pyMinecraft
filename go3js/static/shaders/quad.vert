@@ -2,9 +2,9 @@
 // check : https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
 
 /* attribute vec3 position;  // `position, normal, uv` can not use other name */
-attribute vec3 in_color;
+in vec3 in_color;  // attribute in 1.0
 
-varying vec3 color;
+out vec3 color;  // varying in 1.0
 
 void main() {
     color = in_color;
