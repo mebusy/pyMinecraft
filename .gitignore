@@ -162,3 +162,5 @@ cython_debug/
 .DS_Store
 *.swp
 gin-bin
+test.wasm
+
