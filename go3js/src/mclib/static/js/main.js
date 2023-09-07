@@ -6,6 +6,10 @@ import { Player } from './player.js'
 
 import Stats from './libs/Stats.js'
 
+import * as WASM from './wasm.js'
+
+// WASM.load('/static/bin/lib.wasm')
+
 // show fps
 const stats = new Stats()
 stats.showPanel(0)

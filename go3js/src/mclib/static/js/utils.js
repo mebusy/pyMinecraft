@@ -1,5 +1,6 @@
 import { ShaderMaterial as THREE_ShaderMaterial } from 'three'
 
+// fetch text data
 function fetchData(url) {
   const request = new XMLHttpRequest()
   request.open('GET', url, false) // `false` makes the request synchronous

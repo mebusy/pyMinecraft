@@ -15,6 +15,7 @@ var html_template = `
     <!-- link rel="stylesheet" href="/static/css/style.css" -->
 
     <script src="/static/js/libs/es-module-shims-1.6.3.js"></script>
+    <script src="/static/js/wasm_exec.js"></script>
 
     <script type="importmap">
       {
