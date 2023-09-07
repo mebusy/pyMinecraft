@@ -1,6 +1,7 @@
 package mclib
 
 import (
+	"embed"
 	"fmt"
 	"log"
 	"log/slog"
@@ -29,25 +30,40 @@ func listenAndServe(addr string, handler http.Handler) error {
 	return srv.Serve(tcpKeepAliveListener{ln.(*net.TCPListener)})
 }
 
+/*
 var staticDir string = "../static/" // by default, it's static/ folder with same level as src/
 var staticDirRegistered = false
 
-func SetStaticDir(dir string) {
-	staticDir = dir
-}
+	func SetStaticDir(dir string) {
+		staticDir = dir
+	}
 
+/
+*/
+//go:embed  static
+var embedFiles embed.FS
+
+//*/
+
+// TODO  separate  handler-registration and server-starting
 func StartServer(port int) {
 	slog.Info("starting server", "port", port)
 
-	if !staticDirRegistered && staticDir != "" {
-		staticDirRegistered = true
-		slog.Info("set static dir", "dir", staticDir)
-		dir := http.Dir(staticDir)
-		handler := http.StripPrefix("/static/", http.FileServer(dir))
-		http.Handle("/static/", handler)
+	/*
+		if !staticDirRegistered && staticDir != "" {
+			staticDirRegistered = true
+			slog.Info("set static dir", "dir", staticDir)
+			dir := http.Dir(staticDir)
+			handler := http.StripPrefix("/static/", http.FileServer(dir))
+			http.Handle("/static/", handler)
 
-		http.HandleFunc("/", defaultHandler)
-	}
+			http.HandleFunc("/", defaultHandler)
+		}
+	    /*/
+	// http.FS no need strip prefix
+	http.Handle("/static/", http.FileServer(http.FS(embedFiles)))
+	http.HandleFunc("/", defaultHandler)
+	//*/
 
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 	if err != nil {
